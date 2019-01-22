@@ -33,4 +33,6 @@ def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
                 n_num += 1
             except Exception as e:
                 print(e)
+                print('Sleep 5 minutes ...')
+                time.sleep(300)
                 continue
