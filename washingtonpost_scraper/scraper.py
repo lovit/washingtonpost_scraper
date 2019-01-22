@@ -1,4 +1,5 @@
 import json
+import time
 import requests
 from .parser import parse_page
 
@@ -24,6 +25,7 @@ def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
         if not urls or n_num >= max_num:
             return None
         for url in urls:
+            time.sleep(sleep)
             if n_num >= max_num:
                 break
             try:
