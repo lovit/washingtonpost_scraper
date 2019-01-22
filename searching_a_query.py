@@ -15,7 +15,7 @@ def save(json_obj, directory):
         return True
     except Exception as e:
         print(e)
-        print(json_obj)
+        print('url : {}'.format(json_obj.get('url', 'Not found')))
         return False
 
 def main():
