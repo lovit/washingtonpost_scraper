@@ -4,7 +4,8 @@ import os
 from washingtonpost_scraper import yield_articles_from_search_result
 
 def save(json_obj, directory):
-    date = '-'.join(json_obj['date'].split(' ')[:3])
+    normalize = lambda v:v.replace(',', '').replace('.','')
+    date = '-'.join([normalize(v) for v in json_obj['date'].split('')[:3]])
     urlpart = json_obj['url'].split('/')[-1].split('.')[0]
     filepath = '{}/{}_{}.json'.format(directory, date, urlpart)
     with open(filepath, 'w', encoding='utf-8') as fp:
