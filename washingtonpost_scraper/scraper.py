@@ -20,7 +20,11 @@ def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
     max_num_ = 20 if max_num < 20 else max_num
     n_num = 0
     for startat in range(0, max_num_, 20):
-        urls = get_urls_from_a_search_page(query, startat)
+        try:
+            urls = get_urls_from_a_search_page(query, startat)
+        except:
+            print('Getting response exception. sleep 15 minutes ...')
+            time.sleep(600)
         # terminate
         if not urls or n_num >= max_num:
             return None
@@ -33,6 +37,6 @@ def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
                 n_num += 1
             except Exception as e:
                 print(e)
-                print('Sleep 5 minutes ...')
+                print('Parsing exception. sleep 5 minutes ...')
                 time.sleep(300)
                 continue
