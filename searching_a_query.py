@@ -41,7 +41,11 @@ def main():
         if not save(article, directory):
             print('Sleep 5 minutes because exception occurs')
             time.sleep(300)
-        print('scraped {}'.format(article.get('url'), ''))
+        date = article.get('date', '')
+        url = article.get('url', '')
+        if date:
+            url = '  ' + url
+        print('scraped {}{}'.format(date, url))
 
 if __name__ == '__main__':
     main()
