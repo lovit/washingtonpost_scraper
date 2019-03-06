@@ -12,9 +12,12 @@ def get_urls_from_a_search_page(query, startat):
     r = requests.get(url, headers=headers)
     # len('/**/angular.callbacks._b(') = 25
     response = json.loads(r.text[25:-2])
-    urls = [doc.get('contenturl', None) for doc in response.get('results', {}).get('documents', {})]
-    urls = [url for url in urls if url is not None and '//www.washingtonpost.com/' in url]
-    return urls
+    try:
+        urls = [doc.get('contenturl', None) for doc in response.get('results', {}).get('documents', {})]
+        urls = [url for url in urls if url is not None and '//www.washingtonpost.com/' in url]
+        return urls
+    except:
+        return []
 
 def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
     max_num_ = 20 if max_num < 20 else max_num
@@ -22,6 +25,8 @@ def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
     for startat in range(0, max_num_, 20):
         try:
             urls = get_urls_from_a_search_page(query, startat)
+            if not urls:
+                break
         except:
             print('Getting response exception. sleep 15 minutes ...')
             time.sleep(600)
