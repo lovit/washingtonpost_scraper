@@ -2,15 +2,19 @@ import argparse
 import json
 import time
 import os
+import re
 from washingtonpost_scraper import yield_articles_from_search_result
 
 def save(json_obj, directory):
+
+    datepattern = re.compile('\d{4}-\d{2}-\d{2}')
     normalize = lambda v:v.replace(',', '').replace('.','')
     try:
-        date = [normalize(v) for v in json_obj.get('date', '').split()[:3]]
-        date = '-'.join(date) if date else ''
+        date_strf = json_obj.get('date_strf', '')
+        if not datepattern.match(date_strf):
+            return False
         urlpart = json_obj['url'].split('/')[-1].split('.')[0]
-        filepath = '{}/{}_{}.json'.format(directory, date, urlpart)
+        filepath = '{}/{}_{}.json'.format(directory, date_strf, urlpart)
         with open(filepath, 'w', encoding='utf-8') as fp:
             json.dump(json_obj, fp, indent=2, ensure_ascii=False)
         return True
@@ -41,11 +45,11 @@ def main():
         if not save(article, directory):
             print('Sleep 5 minutes because exception occurs')
             time.sleep(300)
-        date = article.get('date', '')
+        date_strf = article.get('date_strf', '')
         url = article.get('url', '')
-        if date:
+        if date_strf:
             url = '  ' + url
-        print('scraped {}{}'.format(date, url))
+        print('scraped {}{}'.format(date_strf, url))
 
 if __name__ == '__main__':
     main()
