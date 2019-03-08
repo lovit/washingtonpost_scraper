@@ -32,7 +32,7 @@ def parse_category(soup):
 
 def parse_page(url):
     soup = get_soup(url)
-    return {
+    json_obj = {
         'url': url,
         'content': parse_content(soup),
         'author': parse_author(soup),
@@ -40,3 +40,6 @@ def parse_page(url):
         'headline': parse_headline(soup),
         'category': parse_category(soup)
     }
+    date_strf = '-'.join(url.split('/')[-4:-1])
+    json_obj['date_strf'] = date_strf
+    return json_obj
