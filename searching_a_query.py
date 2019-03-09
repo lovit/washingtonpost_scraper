@@ -31,12 +31,17 @@ def main():
     if not os.path.exists(directory):
         os.makedirs(directory)
 
+    n_exceptions = 0
+
     stop = False
     for startat in range(begin_num, max_num, 20):
 
         # startat loop
-        if stop:
+        if stop :
             break
+        if n_exceptions > 50:
+            print('{} exceptions. stop scraping'.format(n_exceptions))
+
         print('startat = {}'.format(startat))
 
         # scrap article urls
@@ -44,8 +49,13 @@ def main():
 
         for url in urls:
 
-            # scrap
+            # check empty soup
             json_obj = parse_page(url)
+            if not json_obj:
+                n_exceptions += 1
+                continue
+
+            # scrap
             date_strf = json_obj['date_strf']
             last_part = url.split('/')[-1].split('.')[0]
             filepath = '{}/{}_{}.json'.format(directory, date_strf, last_part)

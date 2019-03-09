@@ -32,6 +32,9 @@ def parse_category(soup):
 
 def parse_page(url):
     soup = get_soup(url)
+    if soup is None:
+        return {}
+
     json_obj = {
         'url': url,
         'content': parse_content(soup),

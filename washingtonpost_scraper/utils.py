@@ -34,7 +34,11 @@ def get_soup(url, headers=None):
 
     if headers is None:
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
-    r = requests.get(url, headers=headers)
+    try:
+        r = requests.get(url, headers=headers)
+    except Exception as e:
+        print(e)
+        return None
     html = r.text
     page = BeautifulSoup(html, 'lxml')
     return page

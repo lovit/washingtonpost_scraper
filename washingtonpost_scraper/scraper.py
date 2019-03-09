@@ -18,15 +18,17 @@ def has_date(url):
 def get_urls_from_a_search_page(query, startat):
     url = url_base.format(query, startat)
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
-    r = requests.get(url, headers=headers)
-    # len('/**/angular.callbacks._b(') = 25
-    response = json.loads(r.text[25:-2])
     try:
+        r = requests.get(url, headers=headers)
+        # len('/**/angular.callbacks._b(') = 25
+        response = json.loads(r.text[25:-2])
+
         urls = [doc.get('contenturl', None) for doc in response.get('results', {}).get('documents', {})]
         urls = [url for url in urls if url is not None and '//www.washingtonpost.com/' in url]
         urls = [url for url in urls if has_date(url)]
         return urls
-    except:
+    except Exception as e:
+        print(e)
         return []
 
 def yield_articles_from_search_result(query, max_num=100, sleep=1.0):
