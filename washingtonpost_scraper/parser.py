@@ -53,25 +53,30 @@ def parse_page_basic(url):
     json_obj['date_strf'] = date_strf
     return json_obj
 
-def parse_author_date_ar(soup):
-    ad = soup.select('div[id=article] font[size=2]')
-    if not ad:
-        return '', ''
-    byline = soup.select('div[id=byline]')
-    if byline:
-        author_ = byline[0].text.strip()
-        if author_.split()[0].lower() == 'by':
-            author = ' '.join(author_.split()[1:])
+def parse_author_date_ar(soup, url):
+    try:
+        ad = soup.select('div[id=article] font')
+        if not ad:
+            return '', ''
+        byline = soup.select('div[id=byline]')
+        if byline:
+            author_ = byline[0].text.strip()
+            if author_.split()[0].lower() == 'by':
+                author = ' '.join(author_.split()[1:])
+            else:
+                author = author_
         else:
-            author = author_
-    else:
-        author_ = ''
-        author = ''
+            author_ = ''
+            author = ''
 
-    if author_:
-        date = ad[0].text.replace(author_, '').strip()
-    else:
-        date = ''
+        if author_:
+            date = ad[0].text.replace(author_, '').strip()
+        else:
+            date = ''
+    except Exception as e:
+        print('author_date exception: {}'.format(url))
+        print(e)
+        return '', ''
 
     return author, date
 
@@ -96,7 +101,7 @@ def parse_content_ar(soup):
 
 def parse_page_ar(url):
     soup = get_soup(url)
-    author, date = parse_author_date_ar(soup)
+    author, date = parse_author_date_ar(soup, url)
     json_obj = {
         'url': url,
         'content': parse_content_ar(soup),
